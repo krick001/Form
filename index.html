@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head> 
+    <link rel="icon" type="image/svg+xml" href="1.svg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapport Mensuel | Morocco88</title>
+    <meta name="description" content="Formulaire de rapport mensuel pour les leaders des clubs Morocco88">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        morocco: {
+                            red: '#C1121F',
+                            dark: '#8B0000',
+                            cream: '#F5F0EB',
+                            sand: '#E8DDD0',
+                            gold: '#D4A017',
+                            green: '#2D5016',
+                        }
+                    },
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif'],
+                        amiri: ['Amiri', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .hero-bg { background: linear-gradient(135deg, #C1121F 0%, #8B0000 100%); }
+        .pattern-overlay { position: relative; }
+        .pattern-overlay::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+        .form-input {
+            transition: all 0.3s ease;
+        }
+        .form-input:focus {
+            border-color: #C1121F;
+            box-shadow: 0 0 0 3px rgba(193, 18, 31, 0.1);
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-in {
+            animation: slideIn 0.4s ease forwards;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="hero-bg text-white py-8 shadow-lg">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between">
+                <a href="Form.html" class="flex items-center space-x-2 group">
+                    <img src="1.svg" alt="Morocco88 Logo" class="h-14 w-14 bg-white rounded-full p-1">
+                    <div>
+                        <span class="text-white font-bold text-xl tracking-wide">Morocco88</span>
+                        <p class="text-white/70 text-xs">Programme Musical Périscolaire</p>
+                    </div>
+                </a>
+                <div class="text-right">
+                    <div class="text-2xl font-bold" id="currentMonth">--</div>
+                    <div class="text-white/70 text-sm" id="currentYear">----</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <!-- Form Title -->
+        <div class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+                <i class="fas fa-chart-line text-morocco-red mr-3"></i>Rapport Mensuel
+            </h1>
+            <p class="text-gray-600 text-lg">Club Leader Monthly Report</p>
+        </div>
+
+        <!-- Alert Messages -->
+        <div id="alertContainer" class="mb-6 hidden">
+            <div id="alertMessage" class="p-4 rounded-lg flex items-center gap-3">
+                <i id="alertIcon" class="text-xl"></i>
+                <span id="alertText"></span>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingOverlay" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-2xl p-8 flex flex-col items-center">
+                <div class="loading-spinner mb-4"></div>
+                <p class="text-gray-700 font-medium">Chargement...</p>
+            </div>
+        </div>
+
+        <!-- Report Form -->
+        <form id="reportForm" class="bg-white rounded-2xl shadow-xl p-6 md:p-10 space-y-8">
+            
+            <!-- Section 1: Leader Information -->
+            <div class="border-b border-gray-200 pb-8">
+                <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                    <span class="w-8 h-8 bg-morocco-red text-white rounded-full flex items-center justify-center text-sm mr-3">1</span>
+                    Informations du Leader
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Full Name -->
+                    <div>
+                        <label for="fullName" class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-user text-morocco-red mr-2"></i>Nom Complet *
+                        </label>
+                        <input type="text" id="fullName" name="fullName" required
+                            class="form-input w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-morocco-red"
+                            placeholder="Entrez votre nom complet">
+                    </div>
+
+                    <!-- Role -->
+                    <div>
+                        <label for="role" class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-user-tie text-morocco-red mr-2"></i>Rôle *
+                        </label>
+                        <select id="role" name="role" required
+                            class="form-input w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-morocco-red bg-white">
+                            <option value="">Sélectionnez votre rôle</option>
+                            <option value="Leader">Leader</option>
+                            <option value="Vice Leader">Co-Leader</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Club Information -->
+            <div class="border-b border-gray-200 pb-8">
+                <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                    <span class="w-8 h-8 bg-morocco-red text-white rounded-full flex items-center justify-center text-sm mr-3">2</span>
+                    Informations du Club
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Graduate -->
+                    <div>
+                        <label for="alumni" class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-graduation-cap text-morocco-red mr-2"></i>Alumni *
+                        </label>
+                        <select id="graduate" name="graduate" required
+                            class="form-input w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-morocco-red bg-white">
+                            <option value="">Sélectionnez l'Alumni</option>
+                        </select>
+                    </div>
+
+                    <!-- Region -->
+                    <div>
+                        <label for="region" class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-map-marker-alt text-morocco-red mr-2"></i>Région *
+                        </label>
+                        <select id="region" name="region" required
+                            class="form-input w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-morocco-red bg-white">
+                            <option value="">Sélectionnez la région</option>
+                        </select>
+                    </div>
+
+                    <!-- School -->
+                    <div class="md:col-span-2">
+                        <label for="school" class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-school text-morocco-red mr-2"></i>Nom de l'École *
+                        </label>
+                        <select id="school" name="school" required disabled
+                            class="form-input w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-morocco-red bg-white">
+                            <option value="">Sélectionnez d'abord le graduate et la région</option>
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">
+                            <i class="fas fa-info-circle mr-1"></i>Les écoles sont filtrées selon le graduate et la région sélectionnés
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Activity Statistics -->
+            <div class="border-b border-gray-200 pb-8">
+                <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                    <span class="w-8 h-8 bg-morocco-red text-white rounded-full flex items-center justify-center text-sm mr-3">3</span>
+                    Statistiques d'Activité
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Number of Sessions -->
+                    <div>
+                        <label for="sessions" class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-calendar-alt text-morocco-red mr-2"></i>Nombre de Sessions *
+                        </label>
+                        <input type="number" id="sessions" name="sessions" min="0" required
+                            class="form-input w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-morocco-red"
+                            placeholder="Nombre de sessions ce mois">
+                    </div>
+
+                    <!-- Number of Celebrations -->
+                    <div>
+                        <label for="celebrations" class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-music text-morocco-red mr-2"></i>Nombre de Célébrations/Concerts *
+                        </label>
+                        <input type="number" id="celebrations" name="celebrations" min="0" max="10" required
+                            class="form-input w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-morocco-red"
+                            placeholder="Nombre de célébrations (0-10)">
+                    <p class="text-xs text-gray-500 mt-1">Entre 0 et 10 célébrations</p>
+                    </div>
+                </div>
+
+                <!-- Dynamic Celebration Fields -->
+                <div id="celebrationFields" class="mt-6 hidden">
+                    <label class="block text-sm font-semibold text-gray-700 mb-4">
+                        <i class="fas fa-users text-morocco-red mr-2"></i>Participants par Célébration
+                    </label>
+                    <div id="celebrationParticipants" class="space-y-4">
+                        <!-- Dynamic fields will be inserted here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Additional Information -->
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                    <span class="w-8 h-8 bg-morocco-red text-white rounded-full flex items-center justify-center text-sm mr-3">4</span>
+                    Informations Supplémentaires
+                </h2>
+                
+                <!-- Notes -->
+                <div>
+                    <label for="notes" class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-sticky-note text-morocco-red mr-2"></i>Notes et Observations
+                    </label>
+                    <textarea id="notes" name="notes" rows="4"
+                        class="form-input w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-morocco-red"
+                        placeholder="Ajoutez vos notes, observations ou suggestions ici..."></textarea>
+                </div>
+            </div>
+
+            <!-- Hidden Fields -->
+            <input type="hidden" id="currentMonthValue" name="currentMonthValue">
+            <input type="hidden" id="currentYearValue" name="currentYearValue">
+
+            <!-- Submit Button -->
+            <div class="pt-4">
+                <button type="submit" id="submitBtn"
+                    class="w-full md:w-auto px-10 py-4 bg-morocco-red text-white font-bold rounded-xl hover:bg-morocco-dark transition-all transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-paper-plane mr-2"></i>Soumettre le Rapport
+                </button>
+            </div>
+        </form>
+
+        <!-- Success Message (Hidden by default) -->
+        <div id="successMessage" class="hidden bg-white rounded-2xl shadow-xl p-10 text-center">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-check-circle text-4xl text-green-500"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-3">Rapport Soumis avec Succès!</h2>
+            <p class="text-gray-600 mb-6">Merci pour votre soumission. Votre rapport a été enregistré dans notre base de données.</p>
+            <div class="bg-gray-50 rounded-xl p-4 text-left mb-6">
+                <p class="text-sm text-gray-600"><strong>Résumé:</strong></p>
+                <ul class="text-sm text-gray-700 mt-2 space-y-1">
+                    <li><i class="fas fa-user text-morocco-red w-6"></i><span id="summaryName"></span></li>
+                    <li><i class="fas fa-school text-morocco-red w-6"></i><span id="summarySchool"></span></li>
+                    <li><i class="fas fa-calendar text-morocco-red w-6"></i><span id="summaryMonth"></span></li>
+                </ul>
+            </div>
+            <button onclick="resetForm()"
+                class="px-6 py-3 bg-morocco-red text-white font-semibold rounded-lg hover:bg-morocco-dark transition-colors">
+                <i class="fas fa-plus mr-2"></i>Nouveau Rapport
+            </button>
+        </div>
+
+        <!-- Already Submitted Message (Hidden by default) -->
+        <div id="alreadySubmittedMessage" class="hidden bg-white rounded-2xl shadow-xl p-10 text-center">
+            <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-exclamation-triangle text-4xl text-yellow-500"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-3">Rapport Déjà Soumis!</h2>
+            <p class="text-gray-600 mb-6">Vous avez déjà soumis un rapport pour ce mois-ci. Vous ne pouvez soumettre qu'un seul rapport par mois.</p>
+            <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-left">
+                <p class="text-sm text-yellow-800">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Vous pourrez soumettre un nouveau rapport le mois prochain.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8 mt-12">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <p class="text-gray-400 text-sm">
+                © 2024 Morocco88 - Programme Musical Périscolaire au Maroc
+            </p>
+            <p class="text-gray-500 text-xs mt-2">
+                Développé avec <i class="fas fa-heart text-morocco-red"></i> pour les jeunes leaders
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // ============================================
+        // CONFIGURATION - Replace with your Google Apps Script URL
+        // ============================================
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbySUuFZjP-g3yg4nAMphUBSRuft4iIIoU4WN46xcpZgY-at1W43HbLW7lDJfV_gLHf0QA/exec';
+
+        // ============================================
+        // DATA STRUCTURES (FallBack if Google Sheets not configured)
+        // ============================================
+        const graduates = [
+            'Marouane Benaissa',
+            'Olaya Bellamine',
+            'Mazine Yadri',
+            'Aya Faquiri',
+            'Aya Bida',
+            'Bahae Eddine Labrim',
+            'Imane Agouzoul',
+            'Marwa Bekkari',
+            'Meryem Chokrada',
+            'Rachid Bassine',
+            'Souhail Baghedoud',
+            'Mohamed Yassine El Bastami',
+        ];
+
+        const regions = [
+            'Rabat-Salé-Kénitra',
+            'Fès-Meknès',
+            'Marrakech-Safi',
+            'Tanger-Tetouan-AlHouceima',
+            'Casablanca-Settat',
+            'Oriental'
+        ];
+
+        // Schools data with graduate and region mapping
+        const schoolsData = [
+            // Rabat-Salé-Kénitra - Morocco88
+            { name: 'Lycée Qualifiant Hassan II', graduate: 'Meryem Chokrada', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Lycée Qualifiant Mohamed V', graduate: 'Aya Bida', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Lycée Qualifiant Lalla Aicha', graduate: 'Souhail Baghedoud', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Collège Lalla Kenza', graduate: 'Aya Bida', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Lycée Qualifiant Moulay Youssef', graduate: 'Imane Agouzoul', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Lycée Qualifiant Lalla Nazha', graduate: 'Imane Agouzoul', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Lycèe Ibnou Battouta', graduate: 'Meryem Chokrada', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Lycèe Ibnou Rochd (Rabat)', graduate: 'Aya Faquiri', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Lycèe Charif Idrissi (Rabat)', graduate: 'Meryem Chokrada', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Lycèe Moulay Abdellah', graduate: 'Aya Faquiri', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Lycèe Ibrahim Roudani (Rabat)', graduate: 'Aya Bida', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Lycèe Abdellah Guennoun', graduate: 'Aya Faquiri', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Lycèe Ibrahim Al Mawsili', graduate: 'Mazine Yadri', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Lycèe Al Moutanabbi', graduate: 'Mazine Yadri', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Lycèe Salama Masadeq', graduate: 'Mazine Yadri', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Lycèe Abderrahman Nasser', graduate: 'Aya Faquiri', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Lycèe Chraibi', graduate: 'Aya Faquiri', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Lycèe Taha Hussein (Kenitra)', graduate: 'Aya Faquiri', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Lycèe Ibnou Rochd (Temara)', graduate: 'Bahae Eddine Labrim', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Lycèe Al Imam Boukhari', graduate: 'Bahae Eddine Labrim', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Lycèe Al Imam Ghazali', graduate: 'Bahae Eddine Labrim', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Collège Moulay Ismail', graduate: 'Imane Agouzoul', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Lycèe Moulay Ibn Noussair', graduate: 'Imane Agouzoul', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Collège Al Jahidh', graduate: 'Imane Agouzoul', region: 'Rabat-Salé-Kénitra' },
+            { name: 'Lycèe Al Jahidh', graduate: 'Imane Agouzoul', region: 'Rabat-Salé-Kénitra' },
+            
+            // Fès-Meknès - Morocco88
+            { name: 'Lycée Qualifiant Moulay Idriss', graduate: 'Bahae Eddine Labrim', region: 'Fès-Meknès' },
+            { name: 'Lycée Qualifiant Oum Elbanine', graduate: 'Marwa Bekkari', region: 'Fès-Meknès' },
+            { name: 'Lycée Qualifiant Ibn Hazm', graduate: 'Bahae Eddine Labrim', region: 'Fès-Meknès' },
+            { name: 'Collège Touria Sakaat', graduate: 'Marwa Bekkari', region: 'Fès-Meknès' },
+            { name: 'Lycèe Moulay Hassan', graduate: 'Meryem Chokrada', region: 'Fès-Meknès' },
+            { name: 'Lycèe Moulay Slimane', graduate: 'Marwa Bekkari', region: 'Fès-Meknès' },
+            { name: 'Lycèe Al Adarissa', graduate: 'Marwa Bekkari', region: 'Fès-Meknès' },
+            { name: 'Lycèe Khawarizmi', graduate: 'Meryem Chokrada', region: 'Fès-Meknès' },
+            { name: 'Collégé Zohour', graduate: 'Marwa Bekkari', region: 'Fès-Meknès' },
+            { name: 'Lycèe Abdelkarim Raiss', graduate: 'Meryem Chokrada', region: 'Fès-Meknès' },
+            { name: 'Lycèe Michlifen', graduate: 'Bahae Eddine Labrim', region: 'Fès-Meknès' },
+            { name: 'Lycèe Mohammed V (Azrou)', graduate: 'Bahae Eddine Labrim', region: 'Fès-Meknès' },
+            { name: 'Collège Al Wahda', graduate: 'Bahae Eddine Labrim', region: 'Fès-Meknès' },
+            { name: 'Lycèe Marjiia', graduate: 'Rachid Bassine', region: 'Fès-Meknès' },
+            { name: 'Lycèe Lalla Amina', graduate: 'Rachid Bassine', region: 'Fès-Meknès' },
+            { name: 'Collège Ibn Tofail (Meknes)', graduate: 'Rachid Bassine', region: 'Fès-Meknès' },
+            { name: 'Lycèe Al Bassatine', graduate: 'Souhail Baghedoud', region: 'Fès-Meknès' },
+            { name: 'Collège Ahmed Chawki', graduate: 'Souhail Baghedoud', region: 'Fès-Meknès' },
+            { name: 'Lycèe 18 Novembre', graduate: 'Souhail Baghedoud', region: 'Fès-Meknès' },
+            
+            // Marrakech-Safi - Morocco88
+            { name: 'Collégé Acharaf', graduate: 'Olaya Bellamine', region: 'Marrakech-Safi' },
+            { name: 'Lycée Qualifiant Acharaf', graduate: 'Marouane Benaissa', region: 'Marrakech-Safi' },
+            { name: 'Lycée Qualifiant Mohamed V', graduate: 'Marouane Benaissa', region: 'Marrakech-Safi' },
+            { name: 'Lycée Qualifiant Mohamed VI', graduate: 'Marouane Benaissa', region: 'Marrakech-Safi' },
+            { name: 'Collège Idriss 2', graduate: 'Olaya Bellamine', region: 'Marrakech-Safi' },
+            { name: 'Lycèe Charif Idrissi (Safi)', graduate: 'Marouane Benaissa', region: 'Marrakech-Safi' },
+            { name: 'Lycèe Al Hidaya Al Islamyya', graduate: 'Aya Faquiri', region: 'Marrakech-Safi' },
+            { name: 'Lycèe Youssof Ibnou Tachafine', graduate: 'Mazine Yadri', region: 'Marrakech-Safi' },
+            { name: 'Lycèe Fatima Mernissi', graduate: 'Mazine Yadri', region: 'Marrakech-Safi' },
+            { name: 'Lycèe Zarktouni', graduate: 'Olaya Bellamine', region: 'Marrakech-Safi' },
+            { name: 'Lycèe Abou Abbas Sabti', graduate: 'Olaya Bellamine', region: 'Marrakech-Safi' },
+            { name: 'Lycèe Sahnoune', graduate: 'Mazine Yadri', region: 'Marrakech-Safi' },
+            { name: 'Lycèe Zineb Nafzawya', graduate: 'Olaya Bellamine', region: 'Marrakech-Safi' },
+            { name: 'Collège Taha Houssein', graduate: 'Marouane Benaissa', region: 'Marrakech-Safi' },
+            { name: 'Collège Fadwa Toukane', graduate: 'Marouane Benaissa', region: 'Marrakech-Safi' },
+            { name: 'Collège Mohammed V', graduate: 'Olaya Bellamine', region: 'Marrakech-Safi' },
+            { name: 'Lycèe Rhamna', graduate: 'Marouane Benaissa', region: 'Marrakech-Safi' },
+            { name: 'Collège El Farabi', graduate: 'Marouane Benaissa', region: 'Marrakech-Safi' },
+            { name: 'Lycèe Chahid Saleh Sarghini', graduate: 'Marouane Benaissa', region: 'Marrakech-Safi' },
+            
+            // Tanger-Tetouan-AlHouceima - Morocco88
+            { name: 'Lycèe Ibn Al Khatib', graduate: 'Aya Faquiri', region: 'Tanger-Tetouan-AlHouceima' },
+            { name: 'Collège Mohammed VI (Tanger)', graduate: 'Souhail Baghedoud', region: 'Tanger-Tetouan-AlHouceima' },
+            { name: 'Lycèe Zineb Annafzawya (Tanger)', graduate: 'Souhail Baghedoud', region: 'Tanger-Tetouan-AlHouceima' },
+            { name: 'Lycèe Moulay Rachid', graduate: 'Aya Bida', region: 'Tanger-Tetouan-AlHouceima' },
+            { name: 'Collège Mohammed V (Tanger)', graduate: 'Souhail Baghedoud', region: 'Tanger-Tetouan-AlHouceima' },
+            
+            // Casablanca-Settat - Morocco88
+            { name: 'Collège Ibn Hicham', graduate: 'Rachid Bassine', region: 'Casablanca-Settat' },
+            { name: 'Lycèe Badr', graduate: 'Rachid Bassine', region: 'Casablanca-Settat' },
+            { name: 'Lycèe Ibn Battouta (Casa)', graduate: 'Rachid Bassine', region: 'Casablanca-Settat' },
+            { name: 'Lycèe Ibn Bannae Mourrakouchi', graduate: 'Rachid Bassine', region: 'Casablanca-Settat' },
+            
+            // Oriental - Morocco88
+            { name: 'Lycèe Nador', graduate: 'Aya Bida', region: 'Oriental' },
+            { name: 'Lycèe Abdelkarim Khattabi', graduate: 'Aya Bida', region: 'Oriental' },
+            { name: 'Lycèe Mohammed 5 (Nador)', graduate: 'Souhail Baghedoud', region: 'Oriental' },
+            { name: 'Lycèe Taha Hussein (Nador)', graduate: 'Souhail Baghedoud', region: 'Oriental' },
+        
+        ];
+
+        // ============================================
+        // GLOBAL VARIABLES
+        // ============================================
+        let currentMonth = '';
+        let currentYear = '';
+        let filteredSchools = [];
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDate();
+            populateDropdowns();
+            attachEventListeners();
+            checkExistingSubmission();
+        });
+
+        // ============================================
+        // DATE INITIALIZATION
+        // ============================================
+        function initializeDate() {
+            const now = new Date();
+            const months = [
+                'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+                'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+            ];
+            
+            currentMonth = months[now.getMonth()];
+            currentYear = now.getFullYear().toString();
+            
+            document.getElementById('currentMonth').textContent = currentMonth;
+            document.getElementById('currentYear').textContent = currentYear;
+            document.getElementById('currentMonthValue').value = currentMonth;
+            document.getElementById('currentYearValue').value = currentYear;
+        }
+
+        // ============================================
+        // POPULATE DROPDOWNS
+        // ============================================
+        function populateDropdowns() {
+            // Populate Graduate dropdown
+            const graduateSelect = document.getElementById('graduate');
+            graduates.forEach(g => {
+                const option = document.createElement('option');
+                option.value = g;
+                option.textContent = g;
+                graduateSelect.appendChild(option);
+            });
+
+            // Populate Region dropdown
+            const regionSelect = document.getElementById('region');
+            regions.forEach(r => {
+                const option = document.createElement('option');
+                option.value = r;
+                option.textContent = r;
+                regionSelect.appendChild(option);
+            });
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        function attachEventListeners() {
+            // Graduate change - filter schools
+            document.getElementById('graduate').addEventListener('change', filterSchools);
+            
+            // Region change - filter schools
+            document.getElementById('region').addEventListener('change', filterSchools);
+            
+            // Celebrations change - generate dynamic fields
+            document.getElementById('celebrations').addEventListener('input', generateCelebrationFields);
+            
+            // Form submission
+            document.getElementById('reportForm').addEventListener('submit', handleFormSubmit);
+        }
+
+        // ============================================
+        // FILTER SCHOOLS BASED ON GRADUATE AND REGION
+        // ============================================
+        function filterSchools() {
+            const graduate = document.getElementById('graduate').value;
+            const region = document.getElementById('region').value;
+            const schoolSelect = document.getElementById('school');
+            
+            // Clear current options
+            schoolSelect.innerHTML = '<option value="">Sélectionnez l\'école</option>';
+            
+            if (!graduate || !region) {
+                schoolSelect.disabled = true;
+                schoolSelect.innerHTML = '<option value="">Sélectionnez d\'abord le graduate et la région</option>';
+                return;
+            }
+            
+            // Filter schools
+            filteredSchools = schoolsData.filter(s => 
+                s.graduate === graduate && s.region === region
+            );
+            
+            if (filteredSchools.length > 0) {
+                schoolSelect.disabled = false;
+                filteredSchools.forEach(s => {
+                    const option = document.createElement('option');
+                    option.value = s.name;
+                    option.textContent = s.name;
+                    schoolSelect.appendChild(option);
+                });
+            } else {
+                schoolSelect.disabled = true;
+                schoolSelect.innerHTML = '<option value="">Aucune école trouvée pour cette sélection</option>';
+            }
+        }
+
+        // ============================================
+        // GENERATE DYNAMIC CELEBRATION FIELDS
+        // ============================================
+        function generateCelebrationFields() {
+            const celebrationCount = parseInt(document.getElementById('celebrations').value) || 0;
+            const container = document.getElementById('celebrationParticipants');
+            const wrapper = document.getElementById('celebrationFields');
+            
+            // Clear previous fields
+            container.innerHTML = '';
+            
+            if (celebrationCount <= 0) {
+                wrapper.classList.add('hidden');
+                return;
+            }
+            
+            wrapper.classList.remove('hidden');
+            
+            // Generate fields for each celebration
+            for (let i = 1; i <= celebrationCount; i++) {
+                const fieldHtml = `
+                    <div class="animate-fade-in" style="animation-delay: ${i * 0.1}s">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Célébration ${i}
+                        </label>
+                        <input type="number" name="celebration_${i}" min="0" 
+                            class="form-input w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-morocco-red"
+                            placeholder="Nombre de participants">
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', fieldHtml);
+            }
+        }
+
+        // ============================================
+        // CHECK EXISTING SUBMISSION
+        // ============================================
+       async function checkExistingSubmission() {
+    const school = document.getElementById('school').value;
+    if (!school) return false;
+
+    try {
+        // نرسل طلب GET للسكريبت لفحص التكرار في الجدول مباشرة
+        const response = await fetch(`${SCRIPT_URL}?school=${encodeURIComponent(school)}&month=${encodeURIComponent(currentMonth)}`);
+        const result = await response.json();
+        
+        if (result.duplicate) {
+            // إذا وجد تكرار، نخفي الفورم ونظهر رسالة الخطأ (Rapport Déjà Soumis)
+            document.getElementById('reportForm').classList.add('hidden');
+            document.getElementById('alreadySubmittedMessage').classList.remove('hidden');
+            return true;
+        } else {
+            // إذا لم يوجد تكرار، نتأكد من إظهار الفورم
+            document.getElementById('reportForm').classList.remove('hidden');
+            document.getElementById('alreadySubmittedMessage').classList.add('hidden');
+            return false;
+        }
+    } catch (error) {
+        console.error("Erreur de vérification:", error);
+        return false;
+    }
+}
+        // ============================================
+        // HANDLE FORM SUBMISSION
+        // ============================================
+   async function handleFormSubmit(event) {
+    event.preventDefault();
+    
+    // 1. فحص التكرار مرة أخرى قبل البدء
+    const isDuplicate = await checkExistingSubmission();
+    if (isDuplicate) return; 
+
+    const submitBtn = document.getElementById('submitBtn');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    
+    if (!validateForm()) return;
+    
+    submitBtn.disabled = true;
+    loadingOverlay.classList.remove('hidden');
+    
+    // 2. تجميع البيانات (تأكد من استخدام الأسماء التي ينتظرها السكريبت)
+    const formData = new URLSearchParams();
+    formData.append('fullName', document.getElementById('fullName').value);
+    formData.append('role', document.getElementById('role').value);
+    formData.append('graduate', document.getElementById('graduate').value);
+    formData.append('region', document.getElementById('region').value);
+    formData.append('school', document.getElementById('school').value);
+    formData.append('sessions', document.getElementById('sessions').value);
+    formData.append('celebrations', document.getElementById('celebrations').value);
+    formData.append('notes', document.getElementById('notes').value);
+    formData.append('month', currentMonth);
+
+    // تجميع الحاضرين (attendee01, attendee02, ...)
+    for (let i = 1; i <= 4; i++) {
+        const input = document.querySelector(`[name="celebration_${i}"]`);
+        formData.append(`attendee0${i}`, input ? input.value : "");
+    }
+
+    try {
+        // 3. الإرسال الفعلي
+        await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors', 
+            body: formData
+        });
+
+        // بما أننا فحصنا التكرار مسبقاً، أي وصول لهذه النقطة يعني نجاحاً حقيقياً
+        loadingOverlay.classList.add('hidden');
+        showSuccessMessage({
+            fullName: document.getElementById('fullName').value,
+            school: document.getElementById('school').value
+        });
+        
+    } catch (error) {
+        loadingOverlay.classList.add('hidden');
+        submitBtn.disabled = false;
+        alert("Une erreur est survenue lors de l'envoi.");
+    }
+}
+        // ============================================
+        // VALIDATE FORM
+        // ============================================
+        function validateForm() {
+            const requiredFields = [
+                'fullName', 'role', 'graduate', 'region', 'school', 'sessions', 'celebrations'
+            ];
+            
+            let isValid = true;
+            
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    field.classList.add('border-red-500');
+                    isValid = false;
+                } else {
+                    field.classList.remove('border-red-500');
+                }
+            });
+            
+            // Validate celebrations (0-10)
+            const celebrations = parseInt(document.getElementById('celebrations').value);
+            if (celebrations > 10) {
+                showAlert('error', 'Le nombre de célébrations ne peut pas dépasser 10.');
+                return false;
+            }
+            
+            if (!isValid) {
+                showAlert('error', 'Veuillez remplir tous les champs obligatoires.');
+            }
+            
+            return isValid;
+        }
+
+        // ============================================
+        // SAVE TO LOCAL STORAGE
+        // ============================================
+        function saveToLocalStorage(data) {
+            let reports = JSON.parse(localStorage.getItem('morocco88_reports') || '[]');
+            reports.push(data);
+            localStorage.setItem('morocco88_reports', JSON.stringify(reports));
+        }
+
+        // ============================================
+        // SHOW SUCCESS MESSAGE
+        // ============================================
+        function showSuccessMessage(data) {
+            document.getElementById('reportForm').classList.add('hidden');
+            document.getElementById('successMessage').classList.remove('hidden');
+            
+            document.getElementById('summaryName').textContent = data.fullName + ' (' + data.role + ')';
+            document.getElementById('summarySchool').textContent = data.school;
+            document.getElementById('summaryMonth').textContent = data.month + ' ' + data.year;
+        }
+
+        // ============================================
+        // SHOW ALREADY SUBMITTED MESSAGE
+        // ============================================
+        function showAlreadySubmittedMessage() {
+            document.getElementById('reportForm').classList.add('hidden');
+            document.getElementById('alreadySubmittedMessage').classList.remove('hidden');
+        }
+
+        // ============================================
+        // RESET FORM
+        // ============================================
+        function resetForm() {
+    // 1. مسح جميع القيود المخزنة محلياً المتعلقة بالمدارس
+    const schoolValue = document.getElementById('school').value;
+    if (schoolValue) {
+        localStorage.removeItem(`submitted_month_${schoolValue}`);
+        localStorage.removeItem(`submitted_year_${schoolValue}`);
+    }
+    
+    // مسح المفاتيح العامة أيضاً
+    localStorage.removeItem('morocco88_leader_name');
+    localStorage.removeItem('morocco88_submission_month');
+    localStorage.removeItem('morocco88_submission_year');
+    
+    // 2. إعادة تعيين النموذج
+    document.getElementById('reportForm').reset();
+    document.getElementById('school').disabled = true;
+    document.getElementById('celebrationFields').classList.add('hidden');
+    document.getElementById('celebrationParticipants').innerHTML = '';
+    
+    // 3. إظهار النموذج وإخفاء رسائل النجاح أو التكرار
+    document.getElementById('reportForm').classList.remove('hidden');
+    document.getElementById('successMessage').classList.add('hidden');
+    document.getElementById('alreadySubmittedMessage').classList.add('hidden');
+    
+    // 4. تفعيل زر الإرسال مجدداً
+    document.getElementById('submitBtn').disabled = false;
+}
+
+        // ============================================
+        // SHOW ALERT
+        // ============================================
+        function showAlert(type, message) {
+            const container = document.getElementById('alertContainer');
+            const alertMessage = document.getElementById('alertMessage');
+            const alertIcon = document.getElementById('alertIcon');
+            const alertText = document.getElementById('alertText');
+            
+            container.classList.remove('hidden');
+            
+            if (type === 'error') {
+                alertMessage.className = 'p-4 rounded-lg flex items-center gap-3 bg-red-100 text-red-800';
+                alertIcon.className = 'fas fa-exclamation-circle text-xl';
+            } else if (type === 'success') {
+                alertMessage.className = 'p-4 rounded-lg flex items-center gap-3 bg-green-100 text-green-800';
+                alertIcon.className = 'fas fa-check-circle text-xl';
+            }
+            
+            alertText.textContent = message;
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                container.classList.add('hidden');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
