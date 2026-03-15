@@ -186,7 +186,7 @@
                         </label>
                         <select id="school" name="school" required disabled
                             class="form-input w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-morocco-red bg-white">
-                            <option value="">Sélectionnez d'abord le graduate et la région</option>
+                            <option value="">Sélectionnez d'abord l'alumni et la région</option>
                         </select>
                         <p class="text-xs text-gray-500 mt-1">
                             <i class="fas fa-info-circle mr-1"></i>Les écoles sont filtrées selon l'alumni et la région sélectionnés
@@ -530,7 +530,7 @@
             
             if (!graduate || !region) {
                 schoolSelect.disabled = true;
-                schoolSelect.innerHTML = '<option value="">Sélectionnez d\'abord le graduate et la région</option>';
+                schoolSelect.innerHTML = '<option value="">Sélectionnez d\'abord alumni et la région</option>';
                 return;
             }
             
